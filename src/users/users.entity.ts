@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Result } from '../results/results.entity'
 
 @Entity()
 export class User {
@@ -22,4 +23,7 @@ export class User {
 
     @Column()
     isConfirmed: boolean
+
+    @OneToMany(() => Result, (result) => result.user)
+    result: Array<Result>
 }

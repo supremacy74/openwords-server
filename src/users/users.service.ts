@@ -37,7 +37,7 @@ export class UsersService {
         return user
     }
 
-    async create(createUserDto: any): Promise<User> {
+    async create(createUserDto: CreateUserDto): Promise<User> {
         const { email } = createUserDto
 
         const existingUser = await this.userRepository.findOne({
@@ -55,8 +55,6 @@ export class UsersService {
         // const code = v4()
         let code = String(Math.floor(Math.random() * 90000) + 10000)
 
-        const isConfirmed = false
-
         const user = new User()
 
         user.name = createUserDto.name
@@ -65,11 +63,14 @@ export class UsersService {
 
         user.password = await bcrypt.hash(createUserDto.password, 10)
 
+        user.isConfirmed = false
+        user.result = []
+
         await confirm(email, code)
 
-        code = await bcrypt.hash(code, 10)
+        user.code = await bcrypt.hash(code, 10)
 
-        return this.userRepository.save({ ...user, code, isConfirmed })
+        return this.userRepository.save({ ...user })
     }
 
     async confirm(email: string, code: string) {

@@ -30,7 +30,7 @@ export class AuthController {
     @Get()
     async getData(@Headers('Authorization') authorization: string) {
         if (!authorization) {
-            throw new UnauthorizedException()
+            return null
         }
 
         const token = authorization.replace('Bearer ', '')
@@ -38,12 +38,7 @@ export class AuthController {
         const user = await this.authService.verify(token)
 
         if (user) {
-            return {
-                id: user.id,
-                name: user.name,
-                surname: user.surname,
-                email: user.email
-            }
+            return user
         } else {
             return null
         }
